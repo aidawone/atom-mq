@@ -1,8 +1,9 @@
-package he.aida.mqt;
+package he.aida.mqt.hello;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 import he.aida.mqt.utils.RabbitMQClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,23 +21,18 @@ class ProviderTests {
         Connection connection = null;
         try {
             ConnectionFactory factory = RabbitMQClient.getInstance();
-            try {
-                connection = factory.newConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                System.out.println(e.getMessage());
-            }
+            connection = factory.newConnection();
+            channel = connection.createChannel();
             //创建通道
             String queue = "hello";
-            try {
-                channel = connection.createChannel();
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
             //参数1: 是否持久化  参数2:是否独占队列 参数3:是否自动删除  参数4:其他属性
             channel.queueDeclare(queue, true, false, false, null);
-            channel.basicPublish("", queue, null, "hello rabbitmq".getBytes());
+            //参数1:交换机
+            //参数2：队列
+            //参数3：额外设置，
+            for (int i = 0; i < 300; i++) {
+                channel.basicPublish("", queue, MessageProperties.PERSISTENT_TEXT_PLAIN, ("work rabbitmq-" + i).getBytes());
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
