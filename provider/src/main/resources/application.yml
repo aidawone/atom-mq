@@ -21,3 +21,14 @@ spring:
     publisher-confirm-type: correlated
 server:
   port: 8081
+
+sunspring:
+  order:
+    exchange: sunspring_order_exchange2
+    queue: sunspring_order_queue2
+    routingKey: sunspring.order2
+  dlx:
+    exchange: sunspring_order_exchange2
+    queue: sunspring.dlx.queue2
+    routingKey: dlx2
+
