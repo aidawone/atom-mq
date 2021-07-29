@@ -1,5 +1,7 @@
 package he.aida.provider.controller.provider;
 
+import com.alibaba.fastjson.JSON;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 
 /**
  * @Author: zhanggr
@@ -103,4 +107,23 @@ public class SendMessageController {
         rabbitTemplate.convertAndSend("lonelyDirectExchange", "TestDirectRouting", map);
         return "ok";
     }
+
+    /**
+     * 发送带有过期时间的消息(测试死信队列)
+     */
+    @GetMapping("/sendDlx")
+    public void sendDlx() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 1);
+        map.put("itemId", 10001);
+        map.put("createTime", new Date());
+        map.put("createName", "admin");
+        rabbitTemplate.convertAndSend("sunspring_order_exchange", "sunspring.order",
+                JSON.toJSONString(map), message -> {
+                    message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                    message.getMessageProperties().setExpiration("10000");
+                    return message;
+                });
+    }
+
 }

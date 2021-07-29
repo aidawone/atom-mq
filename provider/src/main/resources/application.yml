@@ -24,11 +24,11 @@ server:
 
 sunspring:
   order:
-    exchange: sunspring_order_exchange2
-    queue: sunspring_order_queue2
-    routingKey: sunspring.order2
+    exchange: sunspring_order_exchange
+    queue: sunspring_order_queue
+    routingKey: sunspring.order
   dlx:
-    exchange: sunspring_order_exchange2
-    queue: sunspring.dlx.queue2
-    routingKey: dlx2
+    exchange: sunspring_order_exchange
+    queue: sunspring.dlx.queue
+    routingKey: dlx
 
