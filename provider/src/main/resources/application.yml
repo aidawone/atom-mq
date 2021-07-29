@@ -1,0 +1,23 @@
+
+spring:
+  application:
+    name: provider
+  rabbitmq:
+    username: guest
+    password: guest
+#    virtual-host: /mqt
+    host: 127.0.0.1
+    port: 5672
+    #   每次只发一条消息
+    listener:
+      simple:
+        prefetch: 1
+        # 设置消费端手动 ack
+        acknowledge-mode: manual
+
+        # 是否支持重试
+        retry:
+          enabled: true
+    publisher-confirm-type: correlated
+server:
+  port: 8081
